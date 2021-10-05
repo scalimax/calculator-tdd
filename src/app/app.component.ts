@@ -7,7 +7,7 @@ import { CalculatorService } from './calculator.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  calculatorService: any;
+  calculatorService: CalculatorService;
 
   constructor(service: CalculatorService) {
     this.calculatorService = service;
@@ -27,10 +27,18 @@ export class AppComponent {
     this.mainDisplayText += event.target.innerText;
   }
 
-  sum(event: any ) {
+  sum() {
+    this.handleOperationSelection('sum');
+  }
+
+  multiply() {
+    this.handleOperationSelection('multiply');
+  }
+  
+  private handleOperationSelection(operation: string) {
     this.firstOperand = parseFloat(this.mainDisplayText);
     this.mainDisplayText = '0';
-    this.operation = 'sum';
+    this.operation = operation;
   }
 
   enter(event: any) {
@@ -38,4 +46,5 @@ export class AppComponent {
     const result = this.calculatorService.calculate({op1: this.firstOperand, op2: this.secondOperand, operation: this.operation});
     this.mainDisplayText = `${result.result}`;
   }
+
 }

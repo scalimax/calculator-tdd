@@ -18,4 +18,9 @@ describe('CalculatorService', () => {
     const result = service.calculate({op1: 1, op2: 2, operation: 'sum'});
     expect(result).toEqual({result: 3});
   })
+
+  it('should calculate a multiplication', () => {
+    const result = service.calculate({op1: 3, op2: 6, operation: 'multiply'});
+    expect(result).toEqual({result: 18});
+  })
 });

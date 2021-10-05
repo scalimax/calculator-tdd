@@ -39,7 +39,8 @@ describe('AppComponent', () => {
     // this is a spy object with a 'calculate' method
     component.calculatorService = jasmine.createSpyObj(['calculate']);
     // function calculate() { return {result: '14'} }
-    component.calculatorService.calculate.and.returnValue({result: '14'});
+    const spy: jasmine.Spy = component.calculatorService.calculate as jasmine.Spy;
+    spy.and.returnValue({result: '14'});
     
     const html = fixture.nativeElement;
     const key1 = html.querySelector('[data-cy="digit1"]');
@@ -53,10 +54,30 @@ describe('AppComponent', () => {
     expect(mainDisplay.textContent.trim()).toEqual('14');
 
     // assert the expected interaction between AppComponent and CalculatorService
-    const calls = component.calculatorService.calculate.calls;
+    const calls = spy.calls;   
     // calculate has been called just once
     expect(calls.count()).toEqual(1);
     // calculate({op1: '12', op2: '2', operation: 'sum'});
     expect(calls.argsFor(0)[0]).toEqual({op1: 12, op2: 2, operation: 'sum'});
+  })
+
+  it('should calculate a multiplication', () => {
+    component.calculatorService = jasmine.createSpyObj(['calculate']);
+    const spy = component.calculatorService.calculate as jasmine.Spy;
+    spy.and.returnValue({result: '6'});
+
+    const html = fixture.nativeElement;
+    html.querySelector('[data-cy="digit2"]').click();
+    html.querySelector('[data-cy="multiply"]').click();
+    html.querySelector('[data-cy="digit3"]').click();
+    html.querySelector('[data-cy="enter"]').click();
+    fixture.detectChanges();
+    const mainDisplay = html.querySelector('[data-cy="mainDisplay"]');
+    expect(mainDisplay.textContent.trim()).toEqual('6');
+
+    const calls = (spy).calls;
+    expect(calls.count()).toEqual(1);
+    expect(calls.argsFor(0)[0]).toEqual({op1: 2, op2: 3, operation: 'multiply'});
+
   })
 });

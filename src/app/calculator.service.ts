@@ -9,7 +9,13 @@ export class CalculatorService {
   constructor() { }
 
   calculate(arg: any): any {
-    const result = arg.op1 + arg.op2;
-    return {result: result};
+    switch(arg.operation)  {
+      case 'sum':
+        return {result: (arg.op1 + arg.op2)};
+      case 'multiply':
+        return {result: (arg.op1 * arg.op2)};
+    }
+    
+    return {result: 0};
   }
 }

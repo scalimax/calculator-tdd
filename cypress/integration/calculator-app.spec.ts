@@ -5,6 +5,7 @@
 */
 
 import { visitAll } from "@angular/compiler";
+import { should } from "chai";
 import * as cypress from "cypress";
 
 
@@ -29,7 +30,7 @@ describe('CalculatorApp', () => {
   })
 
   it('basic components exist', () => {
-    getMainDisplay();
+    getMainDisplay().debug();
     getDigitKey(1);
   });
 
@@ -70,7 +71,8 @@ describe('CalculatorApp', () => {
   
   const testData = [
     {first:[1], op: 'sum', second: [9], expected: 10},
-    {first:[1, 2], op: 'sum', second: [9, 2], expected: 104}
+    {first:[1, 2], op: 'sum', second: [9, 2], expected: 104},
+    {first: [4], op: 'multiply', second: [5], expected: 20 }
   ];
   testData.forEach((data) => {
     it(`should ${data.first} ${data.op} ${data.second} be equal to ${data.expected}`, ()  => {
@@ -113,6 +115,11 @@ describe('CalculatorApp', () => {
     cy.get('[data-cy="clear"]');
   })
 
+  it('should log each operation performed')
+
+  it('displays the latest 3 operations in the log')
+
+  it('provides a button that can be clicked to view the full log')
 });
 
 //Page Object Pattern
