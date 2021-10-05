@@ -4,17 +4,36 @@
 
 */
 
+import { visitAll } from "@angular/compiler";
+import * as cypress from "cypress";
+
 
 describe('CalculatorApp', () => {
 
-  it('basic components exist', () => {
+  beforeEach( () => {
+    cy.log("this is executed before each test");
     cy.visit('');
+  } )
+
+  afterEach( () => {
+    cy.log("this is executed after each test");
+  })
+
+  before( () => {
+    cy.log("this is executed once before the test suite");
+
+  })
+
+  after( () => {
+    cy.log("this is executed once after the test suite");
+  })
+
+  it('basic components exist', () => {
     getMainDisplay();
     getDigitKey(1);
   });
 
   it('should display 0 in the mainDisplay and 1 on the key digit1', () => {
-    cy.visit('');
     getMainDisplay().should('have.text', 0);
     getDigitKey(1).should('have.text', '1');
 /*
@@ -36,32 +55,45 @@ describe('CalculatorApp', () => {
   })
 
   it('should append a digit to the display when a key is pressed', () => {
-    cy.visit('');
     getDigitKey(1).click();
     getMainDisplay().should('have.text', '1');
   })
 
 
   it('should append the digit to the mainDisplay whenever a key is clicked', () => {
-    cy.visit('');
     getDigitKey(1).click();
     getDigitKey(3).click();
     getDigitKey(6).click();
     getMainDisplay().should('have.text', '136');
   })
 
-  it('should sum two numbers and display the sum in the main display', ()  => {
-    cy.visit('');
-
-    getDigitKey(1).click();
-    cy.get('[data-cy="sum"]').click();
-    getDigitKey(9).click();
-    cy.get('[data-cy="enter"]').click();
-    getMainDisplay().should('have.text', '10');
+  
+  const testData = [
+    {first:[1], op: 'sum', second: [9], expected: 10},
+    {first:[1, 2], op: 'sum', second: [9, 2], expected: 104}
+  ];
+  testData.forEach((data) => {
+    it(`should ${data.first} ${data.op} ${data.second} be equal to ${data.expected}`, ()  => {
+      data.first.forEach( i => getDigitKey(i).click() );
+      cy.get(`[data-cy="${data.op}"]`).click();
+      data.second.forEach( i => getDigitKey(i).click() );
+      cy.get('[data-cy="enter"]').click();
+      getMainDisplay().should('have.text', data.expected);
+    })
+  
   })
 
+  // it('open a new window', () => {
+  //   cy.visit('');
+  //   cy.get('a').then( ($link) => {
+  //     const url = $link.attr('href');
+  //     $link.click();
+  //     cy.visit(url as string);
+  //     cy.contains("0");
+  //   });
+  // })
+
   it('should display the whole keyboard', () => {
-    cy.visit('');
     cy.get('[data-cy="digit0"]');
     cy.get('[data-cy="digit1"]');
     cy.get('[data-cy="digit2"]');
@@ -84,7 +116,6 @@ describe('CalculatorApp', () => {
 });
 
 //Page Object Pattern
-
 function getDigitKey(value: number) {
   return cy.get(`[data-cy="digit${value}"]`);
 }
